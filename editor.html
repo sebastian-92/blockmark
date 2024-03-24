@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body {
+  height: 100%;
+  background-color: #333333;
+
+}
+
+textarea {
+  width: 100%;
+  height: 100vh;
+  background-color: #474747;
+  color: white;
+  flex: 1;
+  position: fixed;
+    left: 220px;
+  
+}
+.button {
+  background-color: #3b00a8;
+  border: none;
+  color: white;
+  padding: 10px 15px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;      
+  word-wrap: break-word;
+  white-space: normal;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  width: 200px;
+}
+.newbutton {
+  background-color: #00a808;
+  border: none;
+  color: white;
+  padding: 10px 15px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;      
+  word-wrap: break-word;
+  white-space: normal;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  width: 200px;
+}
+</style>
+<script>
+  let exportArray = [];
+function getCursorPosition() {
+  var cursorPosition = 0
+    var textBox = document.getElementById("textBox");
+    var newCursorPosition = textBox.selectionStart;
+    if (newCursorPosition === 0) {
+    } else {
+    cursorPosition = newCursorPosition;
+}
+return cursorPosition;
+}
+function insert(input) {
+    var textBox = document.getElementById("textBox");
+    var newText = textBox.value.slice(0, getCursorPosition()) + input + textBox.value.slice(getCursorPosition());
+    textBox.value = newText;
+}
+function downloadFile(filename, text) {
+  var element = document.createElement('a');
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+  element.setAttribute('download', filename);
+  element.style.display = 'none';
+  document.body.appendChild(element);
+  element.click();
+  document.body.removeChild(element);
+}
+function addButton(name){
+    var newButton = document.createElement("button");
+    newButton.innerHTML = name;
+    newButton.setAttribute("class", "button");
+    newButton.setAttribute("onclick", "insert('" + name + "')");
+    var buttonContainer = document.getElementById("buttonContainer");
+    buttonContainer.insertBefore(newButton, buttonContainer.children[0]);
+  exportArray.unshift(name);
+}
+function importMarks(save) {
+  var markArray = save.split("|");
+  for (var i = markArray.length - 1; i >= 0; i--) {
+    addButton(markArray[i]);
+  }
+}
+function exportMarks() {
+  navigator.clipboard.writeText(exportArray.join('|'));
+}
+    </script>
+</head>
+<body>
+<div style="display: flex; flex-direction: row;">
+  <div style="display: flex; flex-direction: column;" id="buttonContainer">
+    <button class="newbutton" onclick="addButton(prompt('Button function?'))">New BlockMark</button>
+    <button class="newbutton" onclick="importMarks(prompt('paste save code to import'))">Import Marks</button>
+    <button class="newbutton" onclick="exportMarks(); alert('Copied to clipboard!')">Export Marks</button>
+    <button class="newbutton" onclick="downloadFile('stuff.txt', getElementById('textBox').value);">Download Text</button>
+  </div>
+  <textarea id="textBox"></textarea>
+</div>
+</body>
+</html>
